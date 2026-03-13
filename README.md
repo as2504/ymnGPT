@@ -11,6 +11,13 @@ An intelligent, PWA-ready web application designed to serve as a smart assistant
 5.  **AI Processing**: The gathered context is sent to the **Groq API** (using models like Llama 3) to generate a professional, helpful, and accurate response.
 6.  **PWA Support**: The app can be installed on your mobile or desktop device for a native-like experience.
 
+## 🏁 How to Start
+
+1.  **Login to Admin Panel**: Open the app and click the **Gear Icon** (top right) or go to `your-url.com/#admin`. Enter the admin password (default is `admin123`).
+2.  **Provide Groq API Key**: In the Admin Dashboard, paste your **Groq API Key** into the required field and click **"Save Configuration"**.
+3.  **Add Knowledge Base**: Upload your college's text, PDF, or DOCX files in the **"Knowledge Base"** section. The app will automatically process and store them locally.
+4.  **Start Chatting**: Go back to the chat view and start asking questions!
+
 ## 🔑 How to Generate a Groq API Key
 
 To use this assistant, you need a Groq API key. Follow these steps:
