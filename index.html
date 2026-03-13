@@ -1108,7 +1108,16 @@ SUGGESTIONS: ["Question 1", "Question 2", "Question 3"]`}
         
         // Put the exact names of the text files you have saved in your folder here.
         // Make sure these files are uploaded to GitHub/Vercel alongside this index.html file.
-        const PRELOAD_FILES = ['college_data.txt'];
+        const PRELOAD_FILES = [
+            'clg_info/common_questions.txt',
+            'clg_info/faculty_details.txt',
+            'clg_info/fees_details.txt',
+            'clg_info/general.txt',
+            'clg_info/imp_anouncements.txt',
+            'clg_info/must_details.txt',
+            'clg_info/principal_details.txt',
+            'clg_info/principals_desk.txt'
+        ];
 
         async function preloadLocalFiles() {
             for (const filename of PRELOAD_FILES) {

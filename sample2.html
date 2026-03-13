@@ -316,8 +316,7 @@
                         <label>Select AI Provider</label>
                         <select id="api-provider-select">
                             <option value="groq">Groq (Llama 3.3 70B)</option>
-                            <option value="deepseek">DeepSeek (DeepSeek Chat)</option>
-                            <option value="gemini">Google Gemini (Gemini 1.5 Flash)</option>
+                            <option value="gemini">Google Gemini (Auto-Fallback Models)</option>
                         </select>
                         <small style="color:var(--text-muted); font-size:0.75rem;">Endpoints and models are routed automatically based on your selection.</small>
                     </div>
@@ -984,13 +983,9 @@ SUGGESTIONS: ["Question 1", "Question 2", "Question 3"]`}
                 endpoint: 'https://api.groq.com/openai/v1/chat/completions',
                 model: 'llama-3.3-70b-versatile'
             },
-            'deepseek': {
-                endpoint: 'https://api.deepseek.com/chat/completions',
-                model: 'deepseek-chat'
-            },
             'gemini': {
-                endpoint: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
-                model: 'gemini-1.5-flash'
+                endpoint: 'native', 
+                model: 'gemini-2.5-flash' // Upgraded to latest Gemini standard
             }
         };
 
@@ -1040,33 +1035,86 @@ SUGGESTIONS: ["Question 1", "Question 2", "Question 3"]`}
                 // Add to temporary history for API request
                 const apiMessages = [...chatHistory, {"role": "user", "content": prompt}];
 
-                // 6. Call API
-                const response = await fetch(selectedEndpoint, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${apiKeyObj.value}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: selectedModel,
-                        messages: apiMessages,
-                        temperature: 0.5
-                    })
-                });
+                let botReply = "";
 
-                if (!response.ok) {
-                    let errorMsg = response.statusText;
-                    try {
-                        const errData = await response.json();
-                        if (errData.error && errData.error.message) {
-                            errorMsg = errData.error.message;
+                // 6. Call API
+                if (selectedProvider === 'gemini') {
+                    // --- NATIVE GEMINI API REQUEST WITH AUTO-FALLBACK ---
+                    const systemInstruction = chatHistory[0].content;
+                    
+                    // Convert our OpenAI-style history into Gemini's exact required format
+                    const geminiContents = apiMessages.slice(1).map(msg => ({
+                        role: msg.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: msg.content }]
+                    }));
+
+                    // The Smart Fallback Array: If one model throws 404, it immediately tries the next one!
+                    const fallbackModels = [selectedModel, 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'];
+                    let response;
+                    let finalData;
+
+                    for (const modelName of fallbackModels) {
+                        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKeyObj.value}`;
+                        
+                        response = await fetch(geminiUrl, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                systemInstruction: { parts: [{ text: systemInstruction }] },
+                                contents: geminiContents,
+                                generationConfig: { temperature: 0.5 }
+                            })
+                        });
+
+                        if (response.ok) {
+                            finalData = await response.json();
+                            break; // Success! Stop checking models.
+                        } else if (response.status !== 404) {
+                            // If it fails for an auth error (like 401), stop immediately, no need to fallback.
+                            break;
                         }
-                    } catch(e) {}
-                    throw new Error(`API Error (${response.status}): ${errorMsg}`);
+                    }
+
+                    if (!response || !response.ok) {
+                        let errorMsg = response ? response.statusText : "Unknown Error";
+                        if (response) {
+                            try {
+                                const errData = await response.json();
+                                if (errData.error && errData.error.message) errorMsg = errData.error.message;
+                            } catch(e) {}
+                        }
+                        throw new Error(`Gemini API Error (${response ? response.status : 'N/A'}): ${errorMsg}`);
+                    }
+                    
+                    botReply = finalData.candidates[0].content.parts[0].text;
+
+                } else {
+                    // --- STANDARD GROQ OPENAI REQUEST ---
+                    const response = await fetch(selectedEndpoint, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${apiKeyObj.value}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            model: selectedModel,
+                            messages: apiMessages,
+                            temperature: 0.5
+                        })
+                    });
+
+                    if (!response.ok) {
+                        let errorMsg = response.statusText;
+                        try {
+                            const errData = await response.json();
+                            if (errData.error && errData.error.message) errorMsg = errData.error.message;
+                        } catch(e) {}
+                        throw new Error(`API Error (${response.status}): ${errorMsg}`);
+                    }
+                    
+                    const data = await response.json();
+                    botReply = data.choices[0].message.content;
                 }
-                
-                const data = await response.json();
-                const botReply = data.choices[0].message.content;
 
                 // 7. Render response and update history
                 hideLoading();
