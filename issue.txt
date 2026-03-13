@@ -1,0 +1,19 @@
+Here is a detailed breakdown of the two CSS adjustments that were implemented to ensure the chat input stays perfectly visible on all phones:
+
+1. The Dynamic Viewport Height (100dvh) Fix
+In older web development, we used height: 100vh; (100% of the Viewport Height) to make an app fill the screen. However, mobile browsers like Chrome and Safari include the top URL/Search bar and the bottom navigation bar in that calculation. Because of this, the browser thinks the screen is taller than the actual visible area, which pushes the very bottom of your app (the input box) off the screen.
+
+What was updated:
+In both the body and #app CSS blocks, I added height: 100dvh; right after the standard 100vh.
+
+dvh stands for Dynamic Viewport Height. It tells the browser to constantly recalculate the height based on whether the URL bar is currently showing or hidden, ensuring the app perfectly snaps to the bottom of the screen no matter what the browser UI is doing.
+
+2. The Safe Area Inset Fix
+Modern smartphones (especially iPhones and newer Androids) don't have physical home buttons anymore; they have a thin "gesture bar" at the very bottom of the screen. If you put an input box right at the bottom edge, this OS-level gesture bar overlaps it, making it hard to tap.
+
+What was updated:
+In the #input-container CSS block, I updated the padding to: padding-bottom: calc(15px + env(safe-area-inset-bottom));.
+
+This is a special CSS variable provided by mobile phones. It tells the browser: "Give this box 15px of padding, BUT if this phone has a gesture bar at the bottom, add extra padding exactly equal to the height of that bar." * This ensures the text box is automatically bumped up slightly on modern phones so the user can easily tap it without accidentally swiping out of the app.
+
+These two simple CSS properties working together are the modern standard for making web apps feel like native mobile apps!

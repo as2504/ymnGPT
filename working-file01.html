@@ -78,7 +78,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
-        body { background-color: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; transition: background-color 0.3s; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; height: 100vh; overflow: hidden; transition: background-color 0.3s; }
 
         /* Custom Scrollbar Styling */
         ::-webkit-scrollbar { width: 6px; }
@@ -87,7 +87,7 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
         /* Main App Container (Mobile First, Max 500px) */
-        #app { width: 100%; max-width: 500px; background-color: var(--bg-app); height: 100vh; height: 100dvh; display: flex; flex-direction: column; box-shadow: var(--shadow); position: relative; transition: background-color 0.3s; }
+        #app { width: 100%; max-width: 500px; background-color: var(--bg-app); height: 100%; display: flex; flex-direction: column; box-shadow: var(--shadow); position: relative; transition: background-color 0.3s; }
 
         /* Header */
         header { padding: 15px 20px; background-color: var(--bg-app); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
@@ -189,7 +189,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Input Area */
-        #input-container { padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); background-color: var(--bg-app); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+        #input-container { padding: 15px 20px; background-color: var(--bg-app); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
         .input-row { display: flex; gap: 10px; align-items: flex-end; }
         textarea { flex: 1; background-color: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); border-radius: 20px; padding: 12px 15px; font-size: 0.95rem; resize: none; max-height: 120px; outline: none; transition: border-color 0.2s; }
         textarea:focus { border-color: var(--primary); }
