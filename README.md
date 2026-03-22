@@ -35,6 +35,17 @@ To use this assistant, you need a Groq API key. Follow these steps:
     *   Enter the admin password (default is `admin123`).
     *   Paste your key into the **"Groq API Key"** field and click **"Save Configuration"**.
 
+## 💳 How to Upgrade Groq Billing Plan
+
+To use models without usage limits (and avoid rate limits), follow these steps:
+
+1.  **Go to Billing Plans**: Visit [https://console.groq.com/settings/billing/plans](https://console.groq.com/settings/billing/plans).
+2.  **Upgrade Plan**: Under the **"Developer plan"**, click **"Upgrade"**.
+3.  **Enter Details**: Add your **Name and Address** and click **"Continue to payment"**.
+4.  **Add Payment Method**: Select **"Card"** and add your **Card Number, Expiration Date, and CVC**.
+5.  **Save Info**: Click **"Save my info"** and provide your **Contact Number and Name** again.
+6.  **Confirm**: Click **"Upgrade"** to complete the process.
+
 ## 🌟 Why This is Useful
 
 *   **Instant Information**: No more digging through complex websites or PDF handbooks. Get answers to "How much is the B.Tech fee?" or "Who is the HOD of Computer Science?" in seconds.
